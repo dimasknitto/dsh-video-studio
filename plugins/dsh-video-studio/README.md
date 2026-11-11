@@ -58,7 +58,7 @@ Di `cordis.patch.yml` bundle:
 ## Instalasi
 
 ```powershell
-git clone <repo-url> dsh-video-studio
+git clone https://github.com/dimasknitto/dsh-video-studio.git
 cd dsh-video-studio
 .\setup.ps1
 ```

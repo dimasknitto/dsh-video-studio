@@ -34,7 +34,7 @@ Headless Shell (~131 MB); `ffmpeg`/`ffprobe` hanya diperlukan untuk `import`
 dan `probe`.
 
 ```powershell
-git clone <repo-url> dsh-video-studio
+git clone https://github.com/dimasknitto/dsh-video-studio.git
 cd dsh-video-studio
 .\setup.ps1
 ```
