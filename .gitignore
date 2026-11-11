@@ -1,0 +1,22 @@
+# dependencies (installed per machine, never committed)
+**/node_modules/
+**/.remotion/
+.npm-cache/
+
+# runtime scratch
+**/.tmp/
+**/*.log
+
+# generated render artifacts (the one demo render below is kept on purpose)
+video-studio/out/
+**/projects/*/out/*
+!video-studio/projects/ai-agent/out/ai-agent.mp4
+**/projects/*/renders.json
+
+# personal / client projects and demos that need large source footage
+video-studio/projects/coba-*/
+video-studio/projects/edit-demo/
+
+# OS noise
+.DS_Store
+Thumbs.db

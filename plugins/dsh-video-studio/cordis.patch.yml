@@ -1,0 +1,8 @@
+- insert:
+    - id: video-studio
+      name: dsh-video-studio
+      config:
+        # studioDir is auto-detected from the repo layout (<repo>/video-studio).
+        # Override only when the engine lives elsewhere.
+        # studioDir: 'D:\video\dsh-video-studio\video-studio'
+        studioPort: 3211

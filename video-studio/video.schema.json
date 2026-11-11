@@ -1,0 +1,319 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dsh.local/video-studio/video.schema.json",
+  "title": "Video Studio spec",
+  "description": "A single JSON document that fully describes a video: format, theme, scenes, audio, and subtitles.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["scenes"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {"type": "string"},
+        "width": {"type": "integer", "minimum": 16, "maximum": 4096, "default": 1080},
+        "height": {"type": "integer", "minimum": 16, "maximum": 4096, "default": 1920},
+        "fps": {"type": "integer", "minimum": 1, "maximum": 120, "default": 30}
+      }
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preset": {"enum": ["midnight", "sunset", "neon", "paper", "mono"]},
+        "bg": {"type": "string"},
+        "fg": {"type": "string"},
+        "muted": {"type": "string"},
+        "accent": {"type": "string"},
+        "accent2": {"type": "string"},
+        "font": {"type": "string"},
+        "mono": {"type": "string"},
+        "radius": {"type": "number", "minimum": 0}
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {"enum": ["fade", "none"]},
+        "duration": {"type": "number", "minimum": 0, "maximum": 2, "description": "Seconds"}
+      }
+    },
+    "progressBar": {"type": "boolean"},
+    "grid": {"type": "boolean"},
+    "brand": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "handle": {"type": "string"},
+        "show": {"type": "boolean"}
+      }
+    },
+    "audio": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["src"],
+        "properties": {
+          "src": {"type": "string"},
+          "volume": {"type": "number", "minimum": 0, "maximum": 1},
+          "startAt": {"type": "number", "minimum": 0},
+          "trimStart": {"type": "number", "minimum": 0},
+          "fadeIn": {"type": "number", "minimum": 0},
+          "fadeOut": {"type": "number", "minimum": 0}
+        }
+      }
+    },
+    "subtitles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["text", "from", "to"],
+        "properties": {
+          "text": {"type": "string"},
+          "from": {"type": "number", "minimum": 0},
+          "to": {"type": "number", "minimum": 0}
+        }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/scene"}
+    }
+  },
+  "$defs": {
+    "base": {
+      "type": "object",
+      "properties": {
+        "id": {"type": "string"},
+        "seconds": {"type": "number", "minimum": 0.2, "maximum": 120},
+        "duration": {"type": "integer", "minimum": 1, "description": "Frames; wins over seconds"},
+        "caption": {"type": "string"},
+        "bg": {"type": "string"}
+      }
+    },
+    "scene": {
+      "oneOf": [
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": {"const": "title"},
+            "kicker": {"type": "string"},
+            "text": {"type": "string"},
+            "subtitle": {"type": "string"},
+            "align": {"enum": ["left", "center"]},
+            "gradient": {"type": "boolean"}
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "items"],
+          "properties": {
+            "type": {"const": "bullets"},
+            "kicker": {"type": "string"},
+            "heading": {"type": "string"},
+            "numbered": {"type": "boolean"},
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "oneOf": [
+                  {"type": "string"},
+                  {
+                    "type": "object",
+                    "required": ["text"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "text": {"type": "string"},
+                      "detail": {"type": "string"}
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "value", "label"],
+          "properties": {
+            "type": {"const": "stat"},
+            "kicker": {"type": "string"},
+            "value": {"type": "string"},
+            "label": {"type": "string"},
+            "note": {"type": "string"}
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": {"const": "quote"},
+            "text": {"type": "string"},
+            "author": {"type": "string"},
+            "role": {"type": "string"}
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "src"],
+          "properties": {
+            "type": {"const": "image"},
+            "src": {"type": "string"},
+            "fit": {"enum": ["cover", "contain"]},
+            "kenBurns": {"enum": ["zoom-in", "zoom-out", "pan-left", "pan-right", "none"]},
+            "overlay": {"type": "number", "minimum": 0, "maximum": 1},
+            "inset": {"type": "boolean"},
+            "heading": {"type": "string"},
+            "body": {"type": "string"}
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "src"],
+          "properties": {
+            "type": {"const": "video"},
+            "src": {"type": "string"},
+            "trimStart": {"type": "number", "minimum": 0},
+            "trimEnd": {"type": "number", "minimum": 0},
+            "muted": {"type": "boolean"},
+            "volume": {"type": "number", "minimum": 0, "maximum": 1},
+            "playbackRate": {"type": "number", "minimum": 0.25, "maximum": 4},
+            "fit": {"enum": ["cover", "contain"]},
+            "inset": {"type": "boolean"},
+            "rounded": {"type": "boolean"}
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "code"],
+          "properties": {
+            "type": {"const": "code"},
+            "filename": {"type": "string"},
+            "language": {"type": "string"},
+            "code": {"type": "string"},
+            "highlight": {"type": "array", "items": {"type": "integer", "minimum": 1}}
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "lines"],
+          "properties": {
+            "type": {"const": "terminal"},
+            "title": {"type": "string"},
+            "lines": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["text"],
+                "additionalProperties": false,
+                "properties": {
+                  "text": {"type": "string"},
+                  "type": {"enum": ["cmd", "out", "ok", "warn", "error"]}
+                }
+              }
+            }
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "messages"],
+          "properties": {
+            "type": {"const": "chat"},
+            "title": {"type": "string"},
+            "messages": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["role", "text"],
+                "additionalProperties": false,
+                "properties": {
+                  "role": {"enum": ["user", "ai"]},
+                  "text": {"type": "string"},
+                  "name": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "heading"],
+          "properties": {
+            "type": {"const": "split"},
+            "image": {"type": "string"},
+            "heading": {"type": "string"},
+            "body": {"type": "string"},
+            "kicker": {"type": "string"},
+            "side": {"enum": ["left", "right", "top"]},
+            "fit": {"enum": ["cover", "contain"]}
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "items"],
+          "properties": {
+            "type": {"const": "bars"},
+            "heading": {"type": "string"},
+            "unit": {"type": "string"},
+            "max": {"type": "number", "minimum": 0},
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["label", "value"],
+                "additionalProperties": false,
+                "properties": {
+                  "label": {"type": "string"},
+                  "value": {"type": "number"},
+                  "note": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": {"const": "outro"},
+            "text": {"type": "string"},
+            "subtitle": {"type": "string"},
+            "cta": {"type": "string"},
+            "handle": {"type": "string"}
+          }
+        },
+        {
+          "allOf": [{"$ref": "#/$defs/base"}],
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": {"const": "blank"},
+            "color": {"type": "string"}
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "../../video.schema.json",
+  "meta": {
+    "title": "Prompt jadi video (16:9)",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "theme": {
+    "preset": "midnight"
+  },
+  "transition": {
+    "type": "fade",
+    "duration": 0.32
+  },
+  "progressBar": true,
+  "grid": true,
+  "brand": {
+    "handle": "dsh video studio",
+    "show": true
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "type": "title",
+      "seconds": 3.4,
+      "kicker": "DSH × Remotion",
+      "text": "Bikin video cukup dengan prompting",
+      "subtitle": "Satu spec JSON. Preview instan. Render MP4.",
+      "gradient": false,
+      "align": "left",
+      "caption": "Video sekarang bisa dibuat dari teks."
+    },
+    {
+      "id": "tiga-langkah",
+      "type": "bullets",
+      "seconds": 5.2,
+      "kicker": "Alurnya",
+      "heading": "Tiga langkah, tanpa buka editor",
+      "items": [
+        {
+          "text": "Tulis brief-nya",
+          "detail": "Topik, durasi, format, gaya visual."
+        },
+        {
+          "text": "Agent menyusun scene",
+          "detail": "Hook, poin, demo, CTA — semuanya jadi data."
+        },
+        {
+          "text": "Render, review, revisi",
+          "detail": "Ganti satu baris, render ulang detik itu juga."
+        }
+      ]
+    },
+    {
+      "id": "chat",
+      "type": "chat",
+      "seconds": 4.2,
+      "title": "Sesi prompting",
+      "messages": [
+        {
+          "role": "user",
+          "text": "Bikin reel 20 detik soal cara kerja AI agent."
+        },
+        {
+          "role": "ai",
+          "text": "Siap. Aku pakai 6 scene: hook, 3 poin, demo terminal, lalu CTA."
+        },
+        {
+          "role": "user",
+          "text": "Temanya dibikin gelap, ungu-cyan."
+        }
+      ]
+    },
+    {
+      "id": "terminal",
+      "type": "terminal",
+      "seconds": 4.6,
+      "title": "video-studio — render",
+      "lines": [
+        {
+          "text": "node video.mjs render projects/ai-agent",
+          "type": "cmd"
+        },
+        {
+          "text": "▶ bundling composition…",
+          "type": "out"
+        },
+        {
+          "text": "▶ 699 frames @ 30fps, 1080×1920",
+          "type": "out"
+        },
+        {
+          "text": "✓ out/ai-agent.mp4  ready in 41s",
+          "type": "ok"
+        }
+      ],
+      "caption": "Preview dan render pakai pipeline Remotion yang sama."
+    },
+    {
+      "id": "angka",
+      "type": "stat",
+      "seconds": 2.9,
+      "kicker": "Hasilnya",
+      "value": "1",
+      "label": "prompt untuk satu video utuh",
+      "note": "Tanpa timeline, tanpa keyframe manual."
+    },
+    {
+      "id": "cta",
+      "type": "outro",
+      "seconds": 3.4,
+      "text": "Giliran kamu.",
+      "subtitle": "Sebut topiknya, sisanya kami susun.",
+      "cta": "Mulai prompting",
+      "handle": "@dsh.video"
+    }
+  ]
+}
