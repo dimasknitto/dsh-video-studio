@@ -94,14 +94,32 @@ koneksi loopback. Path media di-resolve dan ditolak bila keluar dari folder `out
 
 ## Pengembangan
 
-- Client bundle ditulis sebagai factory `window.__ModuleLoader__.load` di
-  `lib/client.js` — tidak perlu build; HMR memuat ulang setelah file berubah.
-- Host half (`lib/index.js`) memakai `ctx.webServer.register({kind:'prefix'})`
-  dan `spawn` Node untuk render/studio.
+Panel ditulis sebagai project React + TypeScript di `src/`; `lib/client.js`
+adalah **hasil build** dan tidak diedit manual.
+
+```bash
+npm install
+npm run build      # hasilkan lib/client.js
+npm run dev        # build ulang saat file berubah
+npm run typecheck
+npm run lint
+npm test
+```
+
+- Build memakai Vite mode library (CJS) lalu dibungkus `moduleLoaderWrapper`
+  menjadi `window.__ModuleLoader__.load({ id, factory })` — bentuk yang dibaca
+  host DSH. Jangan mengubah `formats` atau menghapus plugin itu.
+- `react` dan `react/jsx-runtime` **external**: disediakan host lewat
+  `require`, jadi tidak ikut di-bundle.
+- `lib/index.js` (host half) ditulis manual dan tidak dihasilkan build.
+- Host half memakai `ctx.webServer.register({kind:'prefix'})` dan `spawn` Node
+  untuk render/studio.
 - Setelah mengubah kode host, profile dengan HMR me-reload plugin; jika tidak,
   restart aplikasi.
 - Job render disimpan di memori (maks 20); riwayat permanen ada di
   `projects/<slug>/renders.json` yang ditulis CLI.
+
+Aturan dan panduan agent ada di `AGENTS.md` serta `docs/rules/`.
 
 ## Batasan
 
